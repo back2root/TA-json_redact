@@ -1,0 +1,12 @@
+
+<!-- Documentation: https://dev.splunk.com/enterprise/docs/developapps/addnavsplunkapp/ -->
+
+<nav search_view="search">
+  <view name="search" default='true' />
+  <collection label="Default Views">
+    <view name="datasets" />
+    <view name="reports" />
+    <view name="alerts" />
+    <view name="dashboards" />
+  </collection>
+</nav>

@@ -1,0 +1,8 @@
+# Splunk
+local/
+metadata/local.meta
+
+# Python
+*.pyc
+*.pyo
+
