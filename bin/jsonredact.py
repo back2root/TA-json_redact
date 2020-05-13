@@ -15,14 +15,14 @@
 # under the License.
 #
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-import os,sys
-
-splunkhome = os.environ['SPLUNK_HOME']
-sys.path.append(os.path.join(splunkhome, 'etc', 'apps', 'TA-json_redact', 'lib'))
-from splunklib.searchcommands import dispatch, StreamingCommand, Configuration, Option, validators
-from jsonpath_ng import jsonpath, parse
+import os
+import sys
 import json
+
+SPLUNKHOME = os.environ['SPLUNK_HOME']
+sys.path.append(os.path.join(SPLUNKHOME, 'etc', 'apps', 'TA-json_redact', 'lib'))
+from splunklib.searchcommands import dispatch, StreamingCommand, Configuration, Option, validators
+from jsonpath_ng import parse
 
 
 @Configuration()
@@ -36,18 +36,20 @@ class JsonRedactCommand(StreamingCommand):
 
     ##Description
 
-    All field values matched by one of the `JSONpath` expressions, are replaced through `value`. The JSON document that
-    should be redacted has to be stored in the field `infield`. The redacted version is stored in `outfield`. The fields
-    content is replaced by the specified `value`.
-    JSONpath expressions can be tested using e.g. [JSONPath Online Evaluator](https://jsonpath.com/).
+    All field values matched by one of the `JSONpath` expressions, are replaced through `value`. The
+    JSON document that should be redacted has to be stored in the field `infield`. The redacted
+    version is stored in `outfield`. The fields content is replaced by the specified `value`.
+
+    JSONpath expressions can be tested using e.g. [JSONPath Online Evaluator](https://jsonpath.com/)
 
     ##Example
 
-    Redacts the fields firstName, lastName and phoneNumbers within the JSON document document within `_raw` and stores the
-    redected version in `out`.
+    Redacts the fields firstName, lastName and phoneNumbers within the JSON document document within
+    `_raw` and stores the redected version in `out`.
 
     .. code-block::
-        sourcetype=json | jsonredact infield="_raw" outfield="out" value="-redacted-" "$.firstName" "$.lastName" "$.phoneNumbers[:].number"
+        sourcetype=json | jsonredact infield="_raw" outfield="out" value="-redacted-" "$.firstName"
+        "$.lastName" "$.phoneNumbers[:].number"
 
     """
     infield = Option(
@@ -71,6 +73,9 @@ class JsonRedactCommand(StreamingCommand):
         require=False, default="-redacted-")
 
     def stream(self, records):
+        """
+        Processes the Events
+        """
         jsonpaths = []
         for fieldname in self.fieldnames:
             jsonpaths.append(parse(fieldname))
